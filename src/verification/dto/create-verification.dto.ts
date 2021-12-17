@@ -30,6 +30,11 @@ export class CreateVerificationResponseDto {
   domain: string;
 
   @ApiProperty({
+    description: 'The verification code used to verify the domain.',
+  })
+  code: string;
+
+  @ApiProperty({
     description:
       'The status of the verification request. 0 - Unverified. 1 - Verified.',
   })
