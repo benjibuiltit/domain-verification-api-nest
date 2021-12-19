@@ -12,7 +12,7 @@ export class Verification {
   domain: string;
 
   @Prop({ required: true })
-  code: string
+  code: string;
 
   @Prop({ required: true })
   status: number;
