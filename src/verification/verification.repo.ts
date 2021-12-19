@@ -7,14 +7,16 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { randomUUID } from 'crypto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateVerificationDto } from './dto/update-verification.dto';
+import { VerificationCache } from './verification.cache';
 
 @Injectable()
 export class VerificationRepository {
   constructor(
     @InjectModel(VerificationSchemaDefinition.name)
     private verificationModel: Model<VerificationDocument>,
+    private verificationCache: VerificationCache,
   ) {}
 
   async create(createDto: CreateVerificationRequestDto): Promise<Verification> {
@@ -32,11 +34,18 @@ export class VerificationRepository {
       status: dbResult.status,
     });
 
+    this.verificationCache.set(verification.id, verification);
+
     return verification;
   }
 
   async findById(id: string): Promise<Verification> {
+    const cacheResult = await this.verificationCache.get(id);
+    if (cacheResult) return cacheResult;
+
     const dbResult = await this.verificationModel.findById(id);
+    if (!dbResult) throw new NotFoundException();
+
     const verification = new Verification({
       id: dbResult._id,
       domain: dbResult.domain,
@@ -64,6 +73,8 @@ export class VerificationRepository {
       code: dbResult.code,
       status: dbResult.status,
     });
+
+    await this.verificationCache.set(verification.id, verification);
 
     return verification;
   }

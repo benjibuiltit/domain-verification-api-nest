@@ -28,8 +28,10 @@ export class VerificationService {
     for (const txtRecordList of txtRecordLists) {
       for (const txtRecord of txtRecordList) {
         if (txtRecord === verification.code) {
-          verification.status = VerificationStatus.Verified;
-          return this.verificationRepo.update(verification.id, verification);
+          if (verification.status !== VerificationStatus.Verified) {
+            verification.status = VerificationStatus.Verified;
+            return this.verificationRepo.update(verification.id, verification);
+          }
         }
       }
     }

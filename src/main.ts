@@ -12,8 +12,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Domain Verification API')
-    // TODO
-    // .setDescription('desc')
+    .setDescription('An API for verifying domain ownership via a TXT record.')
     .setVersion('1.0')
     .addTag('verification')
     .build();

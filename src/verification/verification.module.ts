@@ -7,6 +7,7 @@ import {
 } from './verification.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { VerificationRepository } from './verification.repo';
+import { VerificationCache } from './verification.cache';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { VerificationRepository } from './verification.repo';
     ]),
   ],
   controllers: [VerificationController],
-  providers: [VerificationService, VerificationRepository],
+  providers: [VerificationService, VerificationRepository, VerificationCache],
 })
 export class VerificationModule {}
