@@ -24,16 +24,27 @@ export class VerificationService {
   }
 
   async verifyOwnership(verification: Verification): Promise<Verification> {
-    const txtRecordLists = await resolveTxt(verification.domain);
-    for (const txtRecordList of txtRecordLists) {
-      for (const txtRecord of txtRecordList) {
-        if (txtRecord === verification.code) {
-          if (verification.status !== VerificationStatus.Verified) {
-            verification.status = VerificationStatus.Verified;
-            return this.verificationRepo.update(verification.id, verification);
+    try {
+      const txtRecordLists = await resolveTxt(verification.domain);
+      for (const txtRecordList of txtRecordLists) {
+        for (const txtRecord of txtRecordList) {
+          if (txtRecord === verification.code) {
+            if (verification.status !== VerificationStatus.Verified) {
+              verification.status = VerificationStatus.Verified;
+              return this.verificationRepo.update(
+                verification.id,
+                verification,
+              );
+            }
           }
         }
       }
+    } catch (error) {
+      if (error.code === 'ENODATA') {
+        // No TXT record found
+        // Swallow the error
+      }
+      console.error(error);
     }
 
     return verification;

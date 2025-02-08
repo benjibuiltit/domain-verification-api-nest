@@ -16,7 +16,7 @@ describe('AppController', () => {
 
   describe('root', () => {
     it('should return "Hello World!"', () => {
-      expect(appController.getRoot()).toBe(
+      expect(appController.getRoot({})).toBe(
         "I'm not sure how yet; but i want this to link to docs",
       );
     });
